@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website to Image Post</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Enter Website URL</h1>
+  <form id="websiteForm">
+    <input type="text" id="websiteUrl" placeholder="Enter website URL" required>
+    <button type="submit">Generate Post</button>
+  </form>
+  <div id="content">
+    <!-- Scraped content will be shown here -->
+  </div>
+  <div id="imageContainer">
+    <!-- Generated image will be shown here -->
+  </div>
+  <script>
+    document.getElementById('websiteForm').onsubmit = async function(event) {
+      event.preventDefault();
+      const url = document.getElementById('websiteUrl').value;
+
+      const response = await fetch('/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await response.json();
+      document.getElementById('content').innerHTML = `<p>${data.description}</p>`;
+      
+      if (data.imageUrl) {
+        document.getElementById('imageContainer').innerHTML = `<img src="${data.imageUrl}" alt="Generated Image">`;
+      }
+    }
+  </script>
+</body>
+</html>
